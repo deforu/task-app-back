@@ -22,6 +22,16 @@ class Api::V1::TodosController < ApplicationController
       render json: { status: 500, message: "Todoの削除に失敗しました" }
     end
   end
+  
+  def update
+    todo = Todo.find(params[:id])
+
+    if todo.update(todo_params)
+      render json: { status: 200, todo: todo }
+    else
+      render json: { status: 500, message: "Todoの更新に失敗しました" }
+    end
+  end
 
   # def show
   #   todo = Todo.find(params[:id])
