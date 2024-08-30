@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_18_134059) do
+ActiveRecord::Schema.define(version: 2024_08_29_174826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,9 @@ ActiveRecord::Schema.define(version: 2024_07_18_134059) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "description"
+    t.date "due_date", default: -> { "CURRENT_DATE" }, null: false
+    t.boolean "is_important", default: false, null: false
+    t.boolean "completed", default: false, null: false
   end
 
 end
