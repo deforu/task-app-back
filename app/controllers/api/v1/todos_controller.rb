@@ -11,6 +11,7 @@ class Api::V1::TodosController < ApplicationController
       render json: { status: 200, todo: todo }
     else
       render json: { status: 500, message: "Todoの作成に失敗しました", errors: todo.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -40,7 +41,7 @@ class Api::V1::TodosController < ApplicationController
     render json: { status: 404, message: "Todoが見つかりません" }
   end
 
- def important
+  def important
     todos = Todo.where(is_important: true)
     render json: { status: 200, todos: todos }
   end
@@ -54,10 +55,8 @@ class Api::V1::TodosController < ApplicationController
     todos = Todo.where(completed: true)
     render json: { status: 200, todos: todos }
   end
-end
 
   private
-
   def todo_params
     params.require(:todo).permit(:title, :completed, :due_date, :is_important)
   end
