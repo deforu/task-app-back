@@ -40,3 +40,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data'
 gem 'tzinfo', '~> 2.0'
+
+# deviseをインストール
+gem 'devise'
+gem 'devise_token_auth'

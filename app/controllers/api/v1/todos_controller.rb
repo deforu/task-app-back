@@ -2,6 +2,7 @@ class Api::V1::TodosController < ApplicationController
   def index
     todos = Todo.order(created_at: :asc)
     render json: { status: 200, todos: todos }
+    # render json: { message: "Hello World!"} # 動作確認用のテストAPI
   end
   
   def create
