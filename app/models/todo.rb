@@ -1,4 +1,6 @@
 class Todo < ApplicationRecord
+  belongs_to :user
+
   validates :title, presence: true, length: { maximum: 140 }
   validates :completed, inclusion: { in: [true, false] }
   validates :due_date, presence: true
