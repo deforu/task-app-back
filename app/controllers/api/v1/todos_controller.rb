@@ -1,13 +1,16 @@
 class Api::V1::TodosController < ApplicationController
+  # ログインしていないユーザーはアクセスできないようにする↓
+  before_action :authenticate_api_v1_user!
+
   def index
-    todos = Todo.order(created_at: :asc)
+    todos = Todo.where(user_id: current_api_v1_user.id).order(created_at: :asc)
     render json: { status: 200, todos: todos }
     # render json: { message: "Hello World!"} # 動作確認用のテストAPI
   end
   
   def create
     todo = Todo.new(todo_params)
-    
+    # ログインしている人のIDを取得　デバイズのcurrent_userメソッドを使用. これはdevise_token_authの機能
     if todo.save
       render json: { status: 200, todo: todo }
     else
