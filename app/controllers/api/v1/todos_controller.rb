@@ -3,14 +3,16 @@ class Api::V1::TodosController < ApplicationController
   before_action :authenticate_api_v1_user!
 
   def index
+    # ログインしているユーザーのTodoのみ取得
     todos = Todo.where(user_id: current_api_v1_user.id).order(created_at: :asc)
     render json: { status: 200, todos: todos }
     # render json: { message: "Hello World!"} # 動作確認用のテストAPI
   end
   
   def create
-    todo = Todo.new(todo_params)
-    # ログインしている人のIDを取得　デバイズのcurrent_userメソッドを使用. これはdevise_token_authの機能
+    # ログインしているユーザーに紐づいたTodoを作成
+     # ログインしている人のIDを取得　デバイズのcurrent_userメソッドを使用. これはdevise_token_authの機能
+    todo = current_api_v1_user.todos.new(todo_params)
     if todo.save
       render json: { status: 200, todo: todo }
     else
@@ -29,7 +31,7 @@ class Api::V1::TodosController < ApplicationController
   end
   
   def update
-    todo = Todo.find(params[:id])
+    todo = current_api_v1_user.todos.find(params[:id])
 
     if todo.update(todo_params)
       render json: { status: 200, todo: todo }
