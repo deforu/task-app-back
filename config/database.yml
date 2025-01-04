@@ -14,8 +14,8 @@ default: &default
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: postgres
-  password: password # 環境に合わせて変更してください
-  host: db # デフォルトだとlocalhostになっているはずなので変更
+  password: password # 環境に合わせて変更してください asdfg
+  host: db # デフォルトだとlocalhostになっているはずなので変更 プッシュするときには、dbのコンテナ名に変更する
 
 development:
   <<: *default

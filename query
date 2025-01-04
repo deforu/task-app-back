@@ -1,0 +1,1 @@
+PS C:\Users\lamzn\git\task-app-back> sc query | findstr /i "postgresql"

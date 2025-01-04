@@ -1,7 +1,13 @@
 version: "3"
+networks:
+  app_network:
+    driver: bridge
+
 services:
   db:
-    image: postgres:latest
+    networks:
+      - app_network
+    image: postgres:16
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -10,7 +16,9 @@ services:
       - pg-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
-  api:
+  api: 
+    networks:
+      - app_network
     build:
       context: ./
       dockerfile: Dockerfile
