@@ -3,8 +3,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [:show, :update] do
         collection do
-        get 'me', to: 'users#me'
-        put :avatar, to: 'users#update_avatar'
+          get 'me', to: 'users#me'
+          put :avatar, to: 'users#update_avatar'
         end
         member do
           # 特定ユーザーの詳細と画像アップロード用エンドポイント
@@ -19,6 +19,11 @@ Rails.application.routes.draw do
           get 'today', to: 'todos#today'
           get 'completed', to: 'todos#completed'
         end
+      end
+
+      # フォルダのCRUD操作用のルートを追加
+      resources :folders do
+        resources :todos, only: [:index, :create] # フォルダ内のタスク操作用
       end
 
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {

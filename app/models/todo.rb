@@ -1,5 +1,6 @@
 class Todo < ApplicationRecord
   belongs_to :user
+  belongs_to :folder, optional: true # フォルダに属さないタスクを許容する場合はoptional: trueを指定
 
   validates :title, presence: true, length: { maximum: 140 }
   validates :completed, inclusion: { in: [true, false] }

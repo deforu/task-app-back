@@ -8,7 +8,10 @@ class User < ActiveRecord::Base
 
   include DeviseTokenAuth::Concerns::User
 
-  has_many :todos
+  # 関連付け
+  has_many :todos, dependent: :destroy
+  has_many :folders, dependent: :destroy # フォルダとの関連を追加
+
   has_one_attached :avatar
 
   # デフォルトのアバターURLを返すメソッド

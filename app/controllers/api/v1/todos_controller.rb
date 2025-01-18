@@ -1,18 +1,30 @@
 class Api::V1::TodosController < ApplicationController
-  # ログインしていないユーザーはアクセスできないようにする↓
+  # ログインしていないユーザーはアクセスできないようにする
   before_action :authenticate_api_v1_user!
 
+  # フォルダに属するTodoのみ取得する場合に必要
+  before_action :set_folder, only: [:index, :create]
+
   def index
-    # ログインしているユーザーのTodoのみ取得
-    todos = Todo.where(user_id: current_api_v1_user.id).order(created_at: :asc)
+    if @folder
+      # 特定のフォルダ内のTodoを取得
+      todos = @folder.todos.order(created_at: :asc)
+    else
+      # 全フォルダのTodoを取得
+      todos = current_api_v1_user.todos.order(created_at: :asc)
+    end
     render json: { status: 200, todos: todos }
-    # render json: { message: "Hello World!"} # 動作確認用のテストAPI
   end
   
   def create
-    # ログインしているユーザーに紐づいたTodoを作成
-     # ログインしている人のIDを取得　デバイズのcurrent_userメソッドを使用. これはdevise_token_authの機能
-    todo = current_api_v1_user.todos.new(todo_params)
+    if @folder
+      # フォルダに属するTodoを作成
+      todo = @folder.todos.new(todo_params.merge(user_id: current_api_v1_user.id))
+    else
+      # フォルダに属さないTodoを作成
+      todo = current_api_v1_user.todos.new(todo_params)
+    end
+
     if todo.save
       render json: { status: 200, todo: todo }
     else
@@ -21,7 +33,7 @@ class Api::V1::TodosController < ApplicationController
   end
 
   def destroy
-    todo = Todo.find(params[:id])
+    todo = current_api_v1_user.todos.find(params[:id])
 
     if todo.destroy
       render json: { status: 200, todo: todo }
@@ -41,29 +53,36 @@ class Api::V1::TodosController < ApplicationController
   end
 
   def show
-    todo = Todo.find(params[:id])
+    todo = current_api_v1_user.todos.find(params[:id])
     render json: { status: 200, todo: todo }
   rescue ActiveRecord::RecordNotFound
     render json: { status: 404, message: "Todoが見つかりません" }
   end
 
   def important
-    todos = Todo.where(is_important: true)
+    todos = current_api_v1_user.todos.where(is_important: true)
     render json: { status: 200, todos: todos }
   end
 
   def today
-    todos = Todo.where(due_date: Date.today)
+    todos = current_api_v1_user.todos.where(due_date: Date.today)
     render json: { status: 200, todos: todos }
   end
 
   def completed
-    todos = Todo.where(completed: true)
+    todos = current_api_v1_user.todos.where(completed: true)
     render json: { status: 200, todos: todos }
   end
 
   private
+
+  def set_folder
+    # フォルダIDがリクエストに含まれている場合にフォルダを取得
+    @folder = current_api_v1_user.folders.find_by(id: params[:folder_id])
+  end
+
   def todo_params
-    params.require(:todo).permit(:title, :completed, :due_date, :is_important)
+    # フォルダ関連のパラメータも許可
+    params.require(:todo).permit(:title, :completed, :due_date, :is_important, :folder_id)
   end
 end
